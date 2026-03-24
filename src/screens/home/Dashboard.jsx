@@ -1,8 +1,9 @@
-import { View, Text, SafeAreaView, TouchableOpacity, ScrollView, StatusBar } from 'react-native'
+import { View, Text,  TouchableOpacity, ScrollView, StatusBar } from 'react-native'
 import React, { useContext } from 'react'
 import Lucide from '@react-native-vector-icons/lucide';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
+import Header from '../../components/Header';
 
 export default function Dashboard() {
     const { user, logout } = useContext(AuthContext);
@@ -11,39 +12,16 @@ export default function Dashboard() {
     return (
         <View className="flex-1 bg-slate-50">
             <StatusBar barStyle="dark-content" />
-            
-            {/* --- TOP FIXED HEADER --- */}
-            <View className="px-6 py-4 flex-row justify-between items-center bg-white border-b border-slate-100">
-                <View className="flex-row items-center gap-4">
-                    {/* Burger Menu */}
-                    <TouchableOpacity
-                        onPress={() => navigation.openDrawer()}
-                        className="p-2 bg-slate-50 rounded-xl border border-slate-100"
-                        activeOpacity={0.7}
-                    >
-                        <Lucide name="menu" size={24} color="#0f172a" />
-                    </TouchableOpacity>
 
-                    <View>
-                        <Text className="text-slate-500 text-xs font-medium uppercase tracking-wider">Welcome back,</Text>
-                        <Text className="text-slate-900 text-lg font-bold">{user?.name || 'User'}</Text>
-                    </View>
-                </View>
+            <Header />
 
-                {/* Notification / Profile Button */}
-                <TouchableOpacity className="p-2 bg-slate-50 rounded-full border border-slate-100">
-                    <Lucide name="bell" size={20} color="#64748b" />
-                </TouchableOpacity>
-            </View>
-
-            {/* --- SCROLLABLE CONTENT --- */}
-            <ScrollView 
-                className="flex-1 px-6" 
+            <ScrollView
+                className="flex-1 px-6"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingTop: 24, paddingBottom: 100 }}
             >
                 {/* Summary Card */}
-                <View className="bg-teal-600 p-6 rounded-3xl shadow-xl shadow-teal-900/20 mb-8">
+                <View className="bg-teal-600 p-6 rounded-3xl shadow-xl shadow-teal-900/20 mb-6">
                     <View className="flex-row justify-between items-start">
                         <View>
                             <Text className="text-teal-100 text-sm font-medium">Total Balance</Text>
@@ -63,10 +41,9 @@ export default function Dashboard() {
                             <Text className="text-white text-lg font-bold">₱ 0.00</Text>
                         </View>
                     </View>
-                    
+
                 </View>
 
-                {/* Recent Activity Header */}
                 <View className="flex-row justify-between items-center mb-5">
                     <Text className="text-xl font-bold text-slate-800">Recent Activity</Text>
                     <TouchableOpacity>
@@ -80,21 +57,13 @@ export default function Dashboard() {
                         <Lucide name="receipt" size={40} color="#cbd5e1" />
                     </View>
                     <Text className="text-slate-900 font-bold text-lg">No expenses yet</Text>
-                    <Text className="text-slate-400 mt-1 text-center px-12 leading-5">
-                        Tap the button below to start splitting bills with your friends.
-                    </Text>
+
                 </View>
 
 
             </ScrollView>
 
-            {/* --- FLOATING ACTION BUTTON --- */}
-            <TouchableOpacity
-                className="absolute bottom-8 right-6 bg-teal-600 w-16 h-16 rounded-2xl items-center justify-center shadow-2xl shadow-teal-900"
-                activeOpacity={0.8}
-            >
-                <Lucide name="plus" size={32} color="white" />
-            </TouchableOpacity>
+
         </View>
     )
 }
