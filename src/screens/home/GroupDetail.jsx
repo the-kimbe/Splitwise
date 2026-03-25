@@ -83,15 +83,12 @@ export default function GroupDetail() {
                     </View>
                 </View>
 
-                {/* --- 1. INFO GRID --- */}
                 <GroupInfoGrid groupData={groupData} />
 
-                {/* --- 2. MEMBERS --- */}
                 <View className="bg-white py-4 mb-4 border-y border-slate-100 shadow-sm">
                     <GroupMembers groupData={groupData} />
                 </View>
 
-                {/* --- 3. BALANCES & HISTORY --- */}
                 <BalanceAndHistory 
                     expenses={expenses} 
                     memberBalances={memberBalances} 
