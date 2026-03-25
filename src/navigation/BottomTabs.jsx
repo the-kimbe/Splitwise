@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Lucide from '@react-native-vector-icons/lucide';
+import Lucide from '../components/Lucide';
 import Dashboard from '../screens/home/Dashboard';
 import Groups from '../screens/home/Groups';
 import History from '../screens/home/History';

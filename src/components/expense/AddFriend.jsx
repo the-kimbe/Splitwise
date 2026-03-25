@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image } from 'react-native';
-import Lucide from '@react-native-vector-icons/lucide';
+import Lucide from '../Lucide';
 import { SectionLabel } from './SubComponents';
-
-// 1. I-import ang iyong mga Sticker Images
-// Palitan mo ito depende sa totoong filenames at path ng images mo
 import Sticker1 from '../../assets/stickers/sticker1.png';
 import Sticker2 from '../../assets/stickers/sticker2.png';
 import Sticker3 from '../../assets/stickers/sticker3.png';
@@ -14,11 +11,8 @@ import Sticker6 from '../../assets/stickers/sticker6.png';
 
 export default function AddFriend({ friends, setFriends }) {
     const [friendName, setFriendName] = useState('');
-
-    // Default selected sticker ay yung una
     const [selectedSticker, setSelectedSticker] = useState(Sticker1);
 
-    // Listahan ng mga stickers na pwedeng pagpilian
     const stickerOptions = [
         { id: 's1', image: Sticker1 },
         { id: 's2', image: Sticker2 },

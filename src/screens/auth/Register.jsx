@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Image, Alert } from 'react-native'
 import React, { useState, useContext } from 'react' // Added useContext
-import Lucide from '@react-native-vector-icons/lucide';
 import { AuthContext } from '../../context/AuthContext'; // Import your context
+import Lucide from '../../components/Lucide';
 
 export default function Register({ navigation }) {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);

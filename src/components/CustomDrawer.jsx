@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import Lucide from '@react-native-vector-icons/lucide';
+import Lucide from '../components/Lucide';
 
 export default function CustomDrawer(props) {
   const { user, logout } = useContext(AuthContext);

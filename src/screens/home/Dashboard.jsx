@@ -1,6 +1,6 @@
-import { View, Text,  TouchableOpacity, ScrollView, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, StatusBar } from 'react-native'
 import React, { useContext } from 'react'
-import Lucide from '@react-native-vector-icons/lucide';
+import Lucide from '../../components/Lucide';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
 import Header from '../../components/Header';

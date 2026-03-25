@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity} from 'react-native'
 import React, {useContext}from 'react'
-import Lucide from '@react-native-vector-icons/lucide';
+import Lucide from '../components/Lucide';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
