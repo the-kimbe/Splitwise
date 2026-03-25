@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import Lucide from '../../components/Lucide';
 import GroupMembers from '../../components/groupDetails/GroupMembers';
-import GroupInfoGrid from '../../components/groupDetails/GroupInfoGrid'; // DAGDAG ITO
-import BalanceAndHistory from '../../components/groupDetails/BalanceAndHistory'; // DAGDAG ITO
+import GroupInfoGrid from '../../components/groupDetails/GroupInfoGrid'; 
+import BalanceAndHistory from '../../components/groupDetails/BalanceAndHistory'; 
 
 export default function GroupDetail() {
     const navigation = useNavigation();
@@ -58,7 +58,6 @@ export default function GroupDetail() {
 
     return (
         <View className="flex-1 bg-slate-50">
-            {/* --- HEADER --- */}
             <View className="px-6 py-4 flex-row justify-between items-center bg-white border-b border-slate-100">
                 <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 bg-slate-50 rounded-full">
                     <Lucide name="chevron-left" size={24} color="#0f172a" />
@@ -71,7 +70,6 @@ export default function GroupDetail() {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
-                {/* BUDGET CARD */}
                 <View className="bg-white p-6 border-b border-slate-100 mb-4 flex-row justify-between items-center shadow-sm">
                     <View>
                         <Text className="text-slate-400 text-[10px] font-bold uppercase">Budget Cap</Text>
