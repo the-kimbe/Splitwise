@@ -1,43 +1,59 @@
-// src/components/expense/GroupMembers.js
 import React from 'react';
 import { View, Text, ScrollView, Image } from 'react-native';
 
-// Gagawa tayo ng local SectionLabel para dito or i-import mo kung global
 const SectionLabel = ({ label }) => (
-    <Text className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-3 ml-1">
+    <Text className="text-slate-400 text-[10px] font-black uppercase tracking-[2px] mb-3 ml-1">
         {label}
     </Text>
 );
 
 export default function GroupMembers({ groupData }) {
-    // Check para iwas error kung sakaling wala pang laman ang groupData
     if (!groupData || !groupData.friends) return null;
 
-    return (
-        <View className="px-6 mb-6">
-            <SectionLabel label="Group Members" />
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
-                {/* 1. "You" Profile */}
-                <View className="items-center mr-4">
-                    <View className="w-16 h-16 rounded-2xl items-center justify-center border-2 border-white shadow-sm">
-                      <Image source={require('../../assets/stickers/sticker6.png')} className="w-14 h-14 rounded-2xl" />
-                    </View>
-                    <Text className="text-[10px] text-slate-500 mt-1 font-medium text-center">You</Text>
-                </View>
+    // Soft background colors for the avatars (similar to your image)
+    const bgColors = ['bg-blue-100', 'bg-green-100', 'bg-purple-100', 'bg-orange-100', 'bg-pink-100'];
 
-                {/* 2. Friends Profiles */}
-                {groupData.friends.map((friend) => (
-                    <View key={friend.id} className="items-center mr-4">
+    return (
+        <View className="px-6 mb-4">
+            <SectionLabel label="Group Members" />
+            
+            <View className="flex-row items-center">
+                {/* STACKED AVATAR CONTAINER */}
+                <View className="flex-row items-center">
+                    
+                    {/* 1. "YOU" AVATAR */}
+                    <View 
+                        className="w-12 h-12 rounded-full bg-blue-50 items-center justify-center border-2 border-white shadow-sm z-[10]"
+                    >
                         <Image 
-                            source={friend.sticker} 
-                            className="w-16 h-16 rounded-2xl border-2 border-white shadow-sm" 
+                            source={require('../../assets/stickers/sticker6.png')} 
+                            className="w-10 h-10 rounded-full" 
                         />
-                        <Text className="text-[10px] text-slate-500 mt-1 font-medium text-center" numberOfLines={1}>
-                            {friend.name}
+                    </View>
+
+                    {/* 2. FRIENDS AVATARS (OVERLAPPING) */}
+                    {groupData.friends.map((friend, index) => (
+                        <View 
+                            key={friend.id} 
+                            style={{ marginLeft: -12, zIndex: 9 - index }} // Negative margin creates the overlap
+                            className={`w-12 h-12 rounded-full ${bgColors[(index + 1) % bgColors.length]} items-center justify-center border-2 border-white shadow-sm`}
+                        >
+                            <Image 
+                                source={friend.sticker} 
+                                className="w-10 h-10 rounded-full" 
+                                resizeMode="contain"
+                            />
+                        </View>
+                    ))}
+
+                    {/* MEMBER COUNT LABEL */}
+                    <View className="ml-4 bg-slate-100 px-3 py-1 rounded-full">
+                        <Text className="text-[10px] text-slate-500 font-black">
+                            {groupData.friends.length + 1} MEMBERS
                         </Text>
                     </View>
-                ))}
-            </ScrollView>
+                </View>
+            </View>
         </View>
     );
 }

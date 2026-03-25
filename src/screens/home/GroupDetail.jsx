@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute, useIsFocused } from '@react-navigation/native';
 import Lucide from '../../components/Lucide';
 import GroupMembers from '../../components/groupDetails/GroupMembers';
-import GroupInfoGrid from '../../components/groupDetails/GroupInfoGrid'; 
-import BalanceAndHistory from '../../components/groupDetails/BalanceAndHistory'; 
+import GroupInfoGrid from '../../components/groupDetails/GroupInfoGrid';
+import BalanceAndHistory from '../../components/groupDetails/BalanceAndHistory';
 
 export default function GroupDetail() {
     const navigation = useNavigation();
@@ -31,10 +31,26 @@ export default function GroupDetail() {
 
     const memberBalances = (groupData?.friends || []).map(friend => {
         let balance = 0;
-        expenses.forEach(exp => {
-            const share = exp.amount / totalMembers;
-            if (exp.paidBy === 'You') balance += share;
-            else if (exp.paidBy === friend.name) balance -= share;
+        expenses.forEach(expense => {
+            if (expense.isPayment) {
+                // --- PAYMENT LOGIC ---
+                // If I paid the friend OR the friend paid me, reduce the balance to 0
+                if (
+                    (expense.paidBy === 'You' && expense.title.includes(friend.name)) ||
+                    (expense.paidBy === friend.name && expense.title.includes('From'))
+                ) {
+                    // Subtract the payment amount directly from the running balance
+                    balance -= expense.amount;
+                }
+            } else {
+                // --- REGULAR SPLIT LOGIC ---
+                const share = expense.amount / totalMembers;
+                if (expense.paidBy === 'You') {
+                    balance += share; // Others owe me
+                } else if (expense.paidBy === friend.name) {
+                    balance -= share; // I owe them
+                }
+            }
         });
         return { ...friend, balance };
     });
@@ -42,15 +58,17 @@ export default function GroupDetail() {
     const handleDeleteGroup = async () => {
         Alert.alert("Delete Group", `Delete "${groupData.name}"?`, [
             { text: "Cancel", style: "cancel" },
-            { text: "Delete", style: "destructive", onPress: async () => {
-                const stored = await AsyncStorage.getItem('userGroups');
-                if (stored) {
-                    const updated = JSON.parse(stored).filter(g => g.id !== groupData.id);
-                    await AsyncStorage.setItem('userGroups', JSON.stringify(updated));
-                    await AsyncStorage.removeItem(`expenses_${groupData.id}`);
-                    navigation.goBack();
+            {
+                text: "Delete", style: "destructive", onPress: async () => {
+                    const stored = await AsyncStorage.getItem('userGroups');
+                    if (stored) {
+                        const updated = JSON.parse(stored).filter(g => g.id !== groupData.id);
+                        await AsyncStorage.setItem('userGroups', JSON.stringify(updated));
+                        await AsyncStorage.removeItem(`expenses_${groupData.id}`);
+                        navigation.goBack();
+                    }
                 }
-            }}
+            }
         ]);
     };
 
@@ -59,7 +77,10 @@ export default function GroupDetail() {
     return (
         <View className="flex-1 bg-slate-50">
             <View className="px-6 py-4 flex-row justify-between items-center bg-white border-b border-slate-100">
-                <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 bg-slate-50 rounded-full">
+                <TouchableOpacity onPress={() => navigation.navigate('AppDrawer', {
+                    screen: 'MainTabs',
+                    params: { screen: 'Groups' }
+                })} className="p-2 bg-slate-50 rounded-full">
                     <Lucide name="chevron-left" size={24} color="#0f172a" />
                 </TouchableOpacity>
                 <View className="items-center">
@@ -87,10 +108,12 @@ export default function GroupDetail() {
                     <GroupMembers groupData={groupData} />
                 </View>
 
-                <BalanceAndHistory 
-                    expenses={expenses} 
-                    memberBalances={memberBalances} 
-                    totalMembers={totalMembers} 
+                <BalanceAndHistory
+                    expenses={expenses}
+                    memberBalances={memberBalances}
+                    totalMembers={totalMembers}
+                    groupData={groupData}
+                    onRefresh={loadExpenses}
                 />
             </ScrollView>
 

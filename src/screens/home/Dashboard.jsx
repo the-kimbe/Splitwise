@@ -56,7 +56,7 @@ export default function Dashboard() {
                     <View className="bg-slate-50 p-6 rounded-full mb-4">
                         <Lucide name="receipt" size={40} color="#cbd5e1" />
                     </View>
-                    <Text className="text-slate-900 font-bold text-lg">No expenses yet</Text>
+                    <Text className="text-slate-900 font-bold text-lg">No Activity yet</Text>
 
                 </View>
 
