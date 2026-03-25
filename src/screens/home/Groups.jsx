@@ -122,12 +122,7 @@ export default function Groups() {
                         <Text className="text-slate-400 mt-2 text-center px-10 leading-5">
                             Start splitting bills by creating a group with your friends!
                         </Text>
-                        <TouchableOpacity 
-                            onPress={() => navigation.navigate('Add')}
-                            className="mt-6 bg-teal-600 px-6 py-3 rounded-2xl"
-                        >
-                            <Text className="text-white font-bold">Create First Group</Text>
-                        </TouchableOpacity>
+                       
                     </View>
                 )}
             </View>

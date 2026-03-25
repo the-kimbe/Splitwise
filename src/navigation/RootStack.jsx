@@ -7,6 +7,7 @@ import Login from '../screens/auth/Login';
 import Register from '../screens/auth/Register';
 import DrawerNav from './DrawerNav'; // Import mo yung Drawer
 import GroupDetail from '../screens/home/GroupDetail'; // Import mo yung GroupDetail screen
+import AddExpense from '../components/groupDetails/AddExpense'; // Import mo yung AddExpense screen
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,14 @@ export default function RootStack() {
           <Stack.Screen
             name="GroupDetail"
             component={GroupDetail}
+            options={{
+              animation: 'slide_from_right' // Magandang transition para sa details
+            }}
+          />
+
+          <Stack.Screen
+            name="AddExpense"
+            component={AddExpense}
             options={{
               animation: 'slide_from_right' // Magandang transition para sa details
             }}
