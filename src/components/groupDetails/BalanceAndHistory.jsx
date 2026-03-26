@@ -22,43 +22,6 @@ export default function BalanceAndHistory({ expenses, memberBalances, totalMembe
         );
     }
 
-    const handleSettleUp = (friend) => {
-        const amount = Math.abs(friend.balance).toFixed(2);
-        const isDebt = friend.balance < 0;
-
-        Alert.alert(
-            "Settle Balance",
-            isDebt
-                ? `Confirm you paid ₱${amount} to ${friend.name}?`
-                : `Confirm ${friend.name} paid you ₱${amount}?`,
-            [
-                { text: "Cancel", style: "cancel" },
-                {
-                    text: "Settle",
-                    onPress: async () => {
-                        try {
-                            const expenseKey = `expenses_${groupData.id}`;
-                            const newPayment = {
-                                id: Date.now().toString(),
-                                title: isDebt ? `Settle: Paid to ${friend.name}` : `Settle: From ${friend.name}`,
-                                // SAVE THE EXACT AMOUNT (Absolute value)
-                                amount: parseFloat(amount),
-                                paidBy: isDebt ? 'You' : friend.name,
-                                date: new Date().toLocaleDateString(),
-                                isPayment: true
-                            };
-                            const updatedExpenses = [...expenses, newPayment];
-                            await AsyncStorage.setItem(expenseKey, JSON.stringify(updatedExpenses));
-                            if (onRefresh) onRefresh();
-                        } catch (error) {
-                            Alert.alert("Error", "Action failed.");
-                        }
-                    }
-                }
-            ]
-        );
-    };
-
     const openEditModal = (item) => {
         setSelectedExpense(item);
         setEditTitle(item.title);
@@ -117,14 +80,11 @@ export default function BalanceAndHistory({ expenses, memberBalances, totalMembe
                 })}
             </View>
 
-            {/* --- 2. FRIENDS' BALANCES --- */}
-            {/* --- 2. FRIENDS' BALANCES --- */}
-            {/* --- 2. FRIENDS' BALANCES --- */}
+            {/* --- 2. FRIENDS' BALANCES (Button Removed) --- */}
             <View className="px-6 mb-6">
                 <SectionLabel label="Group Balances" />
                 <View className="bg-white rounded-[32px] p-2 shadow-sm border border-slate-100">
                     {memberBalances.map((member, index) => {
-                        // Check if settled (threshold to handle decimals)
                         const isSettled = Math.abs(member.balance) < 0.1;
 
                         return (
@@ -144,24 +104,12 @@ export default function BalanceAndHistory({ expenses, memberBalances, totalMembe
                                 </View>
 
                                 <View className="flex-row items-center">
-                                    <Text className={`font-black text-base mr-3 ${isSettled ? 'text-slate-300' : (member.balance >= 0 ? 'text-teal-600' : 'text-rose-600')}`}>
+                                    <Text className={`font-black text-base ${isSettled ? 'text-slate-300' : (member.balance >= 0 ? 'text-teal-600' : 'text-rose-600')}`}>
                                         ₱{Math.abs(member.balance).toFixed(2)}
                                     </Text>
-
-                                    {isSettled ? (
-                                        /* KAPAG OK NA: Green check at hindi clickable */
-                                        <View className="bg-teal-50 p-2 rounded-full border border-teal-100">
-                                            <Lucide name="check-circle-2" size={18} color="#0d9488" />
-                                        </View>
-                                    ) : (
-                                        /* KAPAG MAY UTANG PA: Clickable button */
-                                        <TouchableOpacity
-                                            onPress={() => handleSettleUp(member)}
-                                            className="bg-slate-50 p-2 rounded-full border border-slate-100"
-                                        >
-                                            <Lucide name="check-circle-2" size={18} color="#94a3b8" />
-                                        </TouchableOpacity>
-                                    )}
+                                    {/* Settlement button removed, icon remains for display only */}
+                                    <View className={`${isSettled ? 'bg-teal-50 border-teal-100' : 'bg-slate-50 border-slate-100'} p-2 rounded-full border`}>
+                                    </View>
                                 </View>
                             </View>
                         );

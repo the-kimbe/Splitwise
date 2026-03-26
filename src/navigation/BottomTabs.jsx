@@ -78,7 +78,7 @@ export default function BottomTabs() {
             />
 
             <Tab.Screen
-                name="History"
+                name="Activity"
                 component={History}
                 options={{
                     tabBarIcon: ({ color }) => <Lucide name="history" size={22} color={color} />

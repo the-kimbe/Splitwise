@@ -84,8 +84,7 @@ export default function GroupDetail() {
                     <Lucide name="chevron-left" size={24} color="#0f172a" />
                 </TouchableOpacity>
                 <View className="items-center">
-                    <Text className="text-lg font-bold text-slate-900">{groupData.name}</Text>
-                    <Text className="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Group Summary</Text>
+                    <Text className="text-xl font-bold text-slate-900 ">{groupData.name}</Text>
                 </View>
                 <TouchableOpacity onPress={handleDeleteGroup} className="p-2"><Lucide name="trash-2" size={20} color="#e11d48" /></TouchableOpacity>
             </View>

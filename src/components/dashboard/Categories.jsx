@@ -4,7 +4,7 @@ import Lucide from '../Lucide'
 
 export default function Categories() {
     return (
-        <View className="mb-8 mt-4">
+        <View className="mb-5 mt-4">
             {/* Header Section */}
             <View className="flex-row justify-between items-end mb-5 px-1">
                 <View>
