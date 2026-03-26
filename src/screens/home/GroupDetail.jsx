@@ -29,31 +29,37 @@ export default function GroupDetail() {
 
     const totalSpent = expenses.reduce((sum, item) => sum + item.amount, 0);
 
-    const memberBalances = (groupData?.friends || []).map(friend => {
-        let balance = 0;
-        expenses.forEach(expense => {
-            if (expense.isPayment) {
-                // --- PAYMENT LOGIC ---
-                // If I paid the friend OR the friend paid me, reduce the balance to 0
-                if (
-                    (expense.paidBy === 'You' && expense.title.includes(friend.name)) ||
-                    (expense.paidBy === friend.name && expense.title.includes('From'))
-                ) {
-                    // Subtract the payment amount directly from the running balance
-                    balance -= expense.amount;
-                }
-            } else {
-                // --- REGULAR SPLIT LOGIC ---
-                const share = expense.amount / totalMembers;
-                if (expense.paidBy === 'You') {
-                    balance += share; // Others owe me
-                } else if (expense.paidBy === friend.name) {
-                    balance -= share; // I owe them
-                }
+   // Isama natin ang sarili mo sa listahan ng iko-compute
+const allParticipants = [
+    { id: 'me', name: 'You', sticker: require('../../assets/stickers/sticker6.png') }, // Profile sticker mo
+    ...(groupData?.friends || [])
+];
+
+const memberBalances = allParticipants.map(member => {
+    let balance = 0;
+
+    expenses.forEach(expense => {
+        const share = expense.amount / totalMembers;
+
+        if (expense.isPayment) {
+            // Settle/Payment Logic
+            if (expense.paidBy === member.name) balance += expense.amount;
+            if (expense.title.includes(member.name)) balance -= expense.amount;
+        } else {
+            // Regular Expense Logic
+            // Kung itong member na 'to ang nagbayad, credit sa kanya ang (Total - Share niya)
+            if (expense.paidBy === member.name || (member.name === 'You' && expense.paidBy === 'You')) {
+                balance += (expense.amount - share);
+            } 
+            // Kung hindi siya ang nagbayad, may utang siyang "share"
+            else {
+                balance -= share;
             }
-        });
-        return { ...friend, balance };
+        }
     });
+
+    return { ...member, balance };
+});
 
     const handleDeleteGroup = async () => {
         Alert.alert("Delete Group", `Delete "${groupData.name}"?`, [

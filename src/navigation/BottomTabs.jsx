@@ -4,9 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Lucide from '../components/Lucide';
 import Dashboard from '../screens/home/Dashboard';
 import Groups from '../screens/home/Groups';
-import History from '../screens/home/History';
-import Profile from '../screens/home/Profile';
+import Profile from '../screens/home/Activity';
 import CreateGroup from '../screens/home/CreateGroup';
+import Activity from '../screens/home/Activity';
 
 const Tab = createBottomTabNavigator();
 
@@ -79,7 +79,7 @@ export default function BottomTabs() {
 
             <Tab.Screen
                 name="Activity"
-                component={History}
+                component={Activity}
                 options={{
                     tabBarIcon: ({ color }) => <Lucide name="history" size={22} color={color} />
                 }}

@@ -98,8 +98,8 @@ export default function BalanceAndHistory({ expenses, memberBalances, totalMembe
 
                                 <View className="ml-4 flex-1">
                                     <Text className="text-slate-900 font-bold text-sm">{member.name}</Text>
-                                    <Text className="text-slate-400 text-[10px] font-medium">
-                                        {isSettled ? 'Settled Up' : (member.balance >= 0 ? 'Owes you' : 'You owe them')}
+                                    <Text className={`text-[10px] font-bold uppercase tracking-tighter ${isSettled ? 'text-slate-400' : (member.balance >= 0 ? 'text-teal-600' : 'text-rose-600')}`}>
+                                        {isSettled ? 'All Clear' : (member.balance >= 0 ? 'They pay you' : 'You pay them')}
                                     </Text>
                                 </View>
 
@@ -107,9 +107,7 @@ export default function BalanceAndHistory({ expenses, memberBalances, totalMembe
                                     <Text className={`font-black text-base ${isSettled ? 'text-slate-300' : (member.balance >= 0 ? 'text-teal-600' : 'text-rose-600')}`}>
                                         ₱{Math.abs(member.balance).toFixed(2)}
                                     </Text>
-                                    {/* Settlement button removed, icon remains for display only */}
-                                    <View className={`${isSettled ? 'bg-teal-50 border-teal-100' : 'bg-slate-50 border-slate-100'} p-2 rounded-full border`}>
-                                    </View>
+
                                 </View>
                             </View>
                         );

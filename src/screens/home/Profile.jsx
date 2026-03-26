@@ -124,33 +124,10 @@ export default function Profile() {
           </Text>
         </View>
 
-        {/* 2. STATS ROW (FUNCTIONAL) */}
-        <View className="flex-row px-6 mb-8 justify-between">
-          {/* ACTIVE GROUPS */}
-          <View className="bg-white p-4 rounded-3xl flex-1 mr-2 items-center border border-slate-100 shadow-sm">
-            <Text className="text-teal-600 font-black text-lg">{stats.groups}</Text>
-            <Text className="text-slate-400 text-[8px] font-black uppercase tracking-tighter">Active Groups</Text>
-          </View>
-
-          {/* TOTAL BALANCE (Owed - Owe) */}
-          <View className="bg-white p-4 rounded-3xl flex-1 mx-1 items-center border border-slate-100 shadow-sm">
-            <Text className={`font-black text-lg ${stats.balance >= 0 ? 'text-orange-600' : 'text-rose-600'}`}>
-              ₱{Math.abs(stats.balance).toFixed(2)}
-            </Text>
-            <Text className="text-slate-400 text-[8px] font-black uppercase tracking-tighter">Total Balance</Text>
-          </View>
-
-          {/* OWED BY ME (Pure Debt) */}
-          <View className="bg-white p-4 rounded-3xl flex-1 ml-2 items-center border border-slate-100 shadow-sm">
-            <Text className="text-blue-600 font-black text-lg">
-              ₱{stats.debt.toFixed(2)}
-            </Text>
-            <Text className="text-slate-400 text-[8px] font-black uppercase tracking-tighter">Owed by Me</Text>
-          </View>
-        </View>
+     
 
         {/* 3. SETTINGS GROUPS */}
-        <View className="px-6">
+        <View className="px-6 mt-5">
           <Text className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-3 ml-1">Account Settings</Text>
           <View className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-8">
             <MenuOption
