@@ -3,32 +3,35 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import Lucide from '../components/Lucide';
+// 1. IMPORT TOAST
+import Toast from 'react-native-toast-message';
 
 export default function CustomDrawer(props) {
   const { user, logout } = useContext(AuthContext);
 
-  // Reusable component para sa extra menu items
-  const SecondaryMenu = ({ icon, title, onPress }) => (
-    <TouchableOpacity
-      onPress={onPress}
-      className="flex-row items-center px-4 py-3 mb-1 rounded-xl active:bg-slate-50"
-    >
-      <Lucide name={icon} size={18} color="#64748b" />
-      <Text className="ml-5 text-slate-500 font-bold uppercase text-[11px] tracking-tight">
-        {title}
-      </Text>
-    </TouchableOpacity>
-  );
+  // 2. CREATE A WRAPPER FOR LOGOUT
+  const handleLogout = () => {
+    logout(); // Call the original logout logic
+    
+    // Show Toast
+    Toast.show({
+      type: 'info',
+      text1: 'Signed Out Successfully ',
+      text2: 'Ingat! See you again soon, ' + (user?.name || 'friend') + '.',
+      position: 'bottom',
+      bottomOffset: 40,
+    });
+  };
 
   return (
     <View className="flex-1 bg-white">
-      {/* DRAWER HEADER - LOGO & USER INFO */}
+      {/* DRAWER HEADER */}
       <View className="pt-10 pb-8 px-6 bg-teal-600 rounded-br-[45px] shadow-sm">
         <View className="mb-4 justify-center items-center">
           <View className="w-24 h-24 bg-white rounded-3xl items-center justify-center shadow-sm overflow-hidden border border-white/20">
             <Image
               source={require('../assets/pictures/brand.png')}
-              className="w-32 h-32" // Adjusted size para hindi sumabog sa box
+              className="w-32 h-32" 
               resizeMode="contain"
             />
           </View>
@@ -52,15 +55,14 @@ export default function CustomDrawer(props) {
 
       <DrawerContentScrollView {...props} contentContainerStyle={{ paddingTop: 10 }}>
         <View className="px-3">
-          {/* Nilinis na DrawerItemList (lahat ng styles nasa Navigator na) */}
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
 
-      {/* LOGOUT BUTTON - FOOTER */}
+      {/* LOGOUT BUTTON - UPDATED TO USE handleLogout */}
       <View className="p-6 border-t border-slate-100">
         <TouchableOpacity
-          onPress={logout}
+          onPress={handleLogout} // PINALITAN DITO
           activeOpacity={0.7}
           className="flex-row items-center bg-rose-50 p-4 rounded-2xl border border-rose-100"
         >

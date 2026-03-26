@@ -1,32 +1,45 @@
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Image, Alert } from 'react-native'
-import React, { useState, useContext } from 'react' // Added useContext
-import { AuthContext } from '../../context/AuthContext'; // Import your context
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native'
+import React, { useState, useContext } from 'react'
+import { AuthContext } from '../../context/AuthContext';
 import Lucide from '../../components/Lucide';
+import Toast from 'react-native-toast-message';
 
 export default function Register({ navigation }) {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
-
-  // 1. Create states for the inputs
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // 2. Access register function from context
   const { register } = useContext(AuthContext);
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+      Toast.show({
+        type: 'error',
+        text1: 'Ops! Kulang pa.',
+        text2: 'Please fill in all fields to continue.',
+        position: 'top',
+      });
       return;
     }
 
-    // Kapag tinawag ito, mag-se-setUser ang Context.
-    // Dahil sa RootStack logic, automatic na mag-re-render ang app 
-    // at itatago ang Register screen para ipakita ang Dashboard.
-    await register(name, email, password);
+    try {
+      await register(name, email, password);
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Welcome to Splitwise! ',
+        text2: `Hello, ${name}! Your account is ready.`,
+      });
 
-    // HUWAG NA MAG-NAVIGATION.NAVIGATE DITO
-    console.log("Success! The app will auto-redirect now.");
+      console.log("Success! The app will auto-redirect now.");
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Registration Failed',
+        text2: 'Something went wrong. Try again later.',
+      });
+    }
   };
 
   return (
@@ -45,7 +58,6 @@ export default function Register({ navigation }) {
             </View>
 
             <View className="space-y-5 gap-2">
-              {/* Name Input */}
               <View>
                 <Text className="text-slate-800 font-bold mb-2 ml-1">Full Name</Text>
                 <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-2xl px-4">
@@ -53,13 +65,12 @@ export default function Register({ navigation }) {
                   <TextInput
                     placeholder="John Doe"
                     value={name}
-                    onChangeText={setName} // Update state
+                    onChangeText={setName}
                     className="flex-1 p-4 text-black font-medium"
                   />
                 </View>
               </View>
 
-              {/* Email Input */}
               <View>
                 <Text className="text-slate-800 font-bold mb-2 ml-1">Email Address</Text>
                 <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-2xl px-4">
@@ -67,7 +78,7 @@ export default function Register({ navigation }) {
                   <TextInput
                     placeholder="johndoe@example.com"
                     value={email}
-                    onChangeText={setEmail} // Update state
+                    onChangeText={setEmail}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     className="flex-1 p-4 text-black font-medium"
@@ -75,7 +86,6 @@ export default function Register({ navigation }) {
                 </View>
               </View>
 
-              {/* Password Input */}
               <View>
                 <Text className="text-slate-800 font-bold mb-2 ml-1">Password</Text>
                 <View className="flex-row items-center bg-slate-50 border border-slate-200 rounded-2xl px-4">
@@ -83,7 +93,7 @@ export default function Register({ navigation }) {
                   <TextInput
                     placeholder="••••••••"
                     value={password}
-                    onChangeText={setPassword} // Update state
+                    onChangeText={setPassword}
                     secureTextEntry={isPasswordHidden}
                     className="flex-1 p-4 text-black font-medium"
                   />
@@ -96,7 +106,7 @@ export default function Register({ navigation }) {
 
             <View className="mt-10">
               <TouchableOpacity
-                onPress={handleRegister} // Call registration
+                onPress={handleRegister}
                 className="bg-teal-600 flex-row items-center justify-center py-4 rounded-2xl shadow-xl shadow-teal-900/20"
               >
                 <Text className="text-white font-bold text-lg mr-2">Create Account</Text>

@@ -103,7 +103,7 @@ export default function Dashboard() {
                         <Text className="text-slate-400 text-[10px] font-black uppercase tracking-[2px] mb-1">Timeline</Text>
                         <Text className="text-xl font-black text-slate-900 tracking-tight">Recent Activity</Text>
                     </View>
-                    <TouchableOpacity onPress={() => navigation.navigate('MainTabs', { screen: 'Groups' })}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Main', { screen: 'Activity' })}>
                         <Text className="text-teal-600 font-black text-xs uppercase pb-1">See All</Text>
                     </TouchableOpacity>
                 </View>

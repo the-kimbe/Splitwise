@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, ScrollView, Alert, KeyboardAvoidingView, Platform, Modal, Flat_List, Image } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, ScrollView, KeyboardAvoidingView, Platform, Modal, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Lucide from '../../components/Lucide';
 import { SectionLabel, DetailInput } from '../../components/expense/SubComponents';
+// 1. IMPORT TOAST
+import Toast from 'react-native-toast-message';
 
 export default function AddExpense({ route, navigation }) {
     const { groupData } = route.params;
@@ -11,16 +13,18 @@ export default function AddExpense({ route, navigation }) {
     const [description, setDescription] = useState('');
     const [notes, setNotes] = useState('');
 
-    // --- PAYER STATE ---
     const [paidBy, setPaidBy] = useState({ name: 'You', id: 'me' });
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    // Pagsamahin ang "You" at ang friends para sa selection list
-    const allMembers = [{ id: 'me', name: 'You' }, ...groupData.friends];
-
     const handleSaveExpense = async () => {
+        // 2. ERROR TOAST PARA SA VALIDATION
         if (!amount || !description) {
-            Alert.alert("Wait!", "Please enter the amount and description.");
+            Toast.show({
+                type: 'error',
+                text1: 'Wait! ',
+                text2: 'Please enter the amount and description.',
+                position: 'top',
+            });
             return;
         }
 
@@ -33,7 +37,7 @@ export default function AddExpense({ route, navigation }) {
                 id: Date.now().toString(),
                 title: description,
                 amount: parseFloat(amount),
-                paidBy: paidBy.name, // Isave ang pangalan ng nagbayad
+                paidBy: paidBy.name,
                 notes: notes,
                 date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
                 createdAt: new Date().toISOString()
@@ -42,11 +46,24 @@ export default function AddExpense({ route, navigation }) {
             expensesArray.push(newExpense);
             await AsyncStorage.setItem(expenseKey, JSON.stringify(expensesArray));
 
-            Alert.alert("Success! 🎉", `Expense recorded. ${paidBy.name === 'You' ? 'Everyone owes you.' : 'You owe ' + paidBy.name}`, [
-                { text: "OK", onPress: () => navigation.navigate('GroupDetail', { groupData }) }
-            ]);
+            // 3. SUCCESS TOAST
+            Toast.show({
+                type: 'success',
+                text1: 'Success! ',
+                text2: `Expense recorded. ${paidBy.name === 'You' ? 'Everyone owes you.' : 'You owe ' + paidBy.name}`,
+            });
+
+            // Navigate pabalik
+            navigation.navigate('GroupDetail', { groupData });
+
         } catch (error) {
-            Alert.alert("Error", "Failed to save expense.");
+            console.log("Save Expense Error:", error);
+            // 4. ERROR TOAST PARA SA STORAGE FAIL
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'Failed to save expense. Please try again.',
+            });
         }
     };
 
@@ -54,9 +71,13 @@ export default function AddExpense({ route, navigation }) {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1 bg-white">
             {/* --- HEADER --- */}
             <View className="px-6 py-4 flex-row justify-between items-center border-b border-slate-50">
-                <TouchableOpacity onPress={() => navigation.goBack()} className="p-2"><Lucide name="x" size={24} color="#64748b" /></TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.goBack()} className="p-2">
+                    <Lucide name="x" size={24} color="#64748b" />
+                </TouchableOpacity>
                 <Text className="text-lg font-bold text-slate-900">Add Expense</Text>
-                <TouchableOpacity onPress={handleSaveExpense} className="p-2"><Text className="text-teal-600 font-bold text-lg">Add</Text></TouchableOpacity>
+                <TouchableOpacity onPress={handleSaveExpense} className="p-2">
+                    <Text className="text-teal-600 font-bold text-lg">Add</Text>
+                </TouchableOpacity>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} className="px-6 pt-8">
@@ -65,7 +86,14 @@ export default function AddExpense({ route, navigation }) {
                     <Text className="text-slate-400 text-xs font-bold uppercase mb-2">Amount Spent</Text>
                     <View className="flex-row items-center">
                         <Text className="text-4xl font-black text-slate-900 mr-2">₱</Text>
-                        <TextInput placeholder="0.00" keyboardType="numeric" value={amount} onChangeText={setAmount} className="text-5xl font-black text-slate-900 min-w-[100px]" autoFocus />
+                        <TextInput 
+                            placeholder="0.00" 
+                            keyboardType="numeric" 
+                            value={amount} 
+                            onChangeText={setAmount} 
+                            className="text-5xl font-black text-slate-900 min-w-[100px]" 
+                            autoFocus 
+                        />
                     </View>
                 </View>
 
@@ -84,16 +112,12 @@ export default function AddExpense({ route, navigation }) {
                     <Text className="flex-1 text-slate-700 font-semibold">{paidBy.name}</Text>
                     <Lucide name="chevron-down" size={20} color="#64748b" />
                 </TouchableOpacity>
-
-
             </ScrollView>
 
-            {/* --- MODAL FOR DROPDOWN --- */}
             {/* --- MODAL FOR DROPDOWN --- */}
             <Modal visible={isModalVisible} transparent animationType="slide">
                 <View className="flex-1 justify-end bg-black/50">
                     <View className="bg-white rounded-t-[40px] p-8 pb-12">
-                        {/* Modal Header */}
                         <View className="flex-row justify-between items-center mb-6">
                             <View>
                                 <Text className="text-xl font-black text-slate-900">Who paid?</Text>
@@ -108,7 +132,6 @@ export default function AddExpense({ route, navigation }) {
                         </View>
 
                         <ScrollView showsVerticalScrollIndicator={false} className="max-h-80">
-                            {/* --- OPTION: YOU --- */}
                             <TouchableOpacity
                                 onPress={() => {
                                     setPaidBy({ name: 'You', id: 'me' });
@@ -123,7 +146,6 @@ export default function AddExpense({ route, navigation }) {
                                 {paidBy.id === 'me' && <Lucide name="check-circle" size={20} color="#0d9488" />}
                             </TouchableOpacity>
 
-                            {/* --- OPTIONS: FRIENDS --- */}
                             {groupData.friends.map((friend) => (
                                 <TouchableOpacity
                                     key={friend.id}

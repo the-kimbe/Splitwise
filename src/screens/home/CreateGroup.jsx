@@ -1,11 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Lucide from '../../components/Lucide';
 import { AuthContext } from '../../context/AuthContext';
 import { useIsFocused } from '@react-navigation/native';
 import GroupName from '../../components/expense/GroupName';
 import AddFriend from '../../components/expense/AddFriend';
+// 1. IMPORT TOAST
+import Toast from 'react-native-toast-message';
 import {
     DetailInput,
     SectionLabel,
@@ -23,7 +25,6 @@ export default function CreateGroup({ navigation }) {
     const [budget, setBudget] = useState('');
     const [targetDate, setTargetDate] = useState(null); 
 
-    // Reset form tuwing papasok sa screen
     useEffect(() => {
         if (isFocused) {
             setName('');
@@ -36,8 +37,14 @@ export default function CreateGroup({ navigation }) {
     }, [isFocused]);
 
     const handleSave = async () => {
+        // 2. ERROR TOAST PARA SA VALIDATION
         if (!name.trim()) {
-            Alert.alert("Wait!", "Please enter a group name.");
+            Toast.show({
+                type: 'error',
+                text1: 'Wait! ',
+                text2: 'Please enter a group name.',
+                position: 'top',
+            });
             return;
         }
 
@@ -53,20 +60,30 @@ export default function CreateGroup({ navigation }) {
                 goal: goal,
                 location: location,
                 budget: budget,
-                targetDate: targetDate ? targetDate.toISOString() : null, // Save date as ISO string
+                targetDate: targetDate ? targetDate.toISOString() : null,
                 createdAt: new Date().toISOString()
             };
 
             groupsArray.push(newGroup);
             await AsyncStorage.setItem('userGroups', JSON.stringify(groupsArray));
 
-            Alert.alert("Success! 🎉", `Group "${name}" has been created.`, [
-                { text: "OK", onPress: () => navigation.goBack() }
-            ]);
+            // 3. SUCCESS TOAST
+            Toast.show({
+                type: 'success',
+                text1: 'Success! ',
+                text2: `Group "${name}" has been created.`,
+            });
+
+            navigation.goBack();
             
         } catch (error) {
             console.log("Error saving group:", error);
-            Alert.alert("Error", "Failed to save group.");
+            // 4. ERROR TOAST PARA SA STORAGE ERROR
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'Failed to save group. Please try again.',
+            });
         }
     };
 
@@ -94,7 +111,6 @@ export default function CreateGroup({ navigation }) {
                 <View className="mb-8">
                     <SectionLabel label="Group Details & Budget" />
                     
-                    {/* Calendar Input */}
                     <DateInput 
                         icon="calendar" 
                         value={targetDate} 

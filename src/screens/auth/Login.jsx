@@ -1,31 +1,41 @@
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Image, Alert } from 'react-native'
-import React, { useState, useContext } from 'react' // Dagdag useContext
-import { AuthContext } from '../../context/AuthContext'; // Siguraduhin ang path
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native'
+import React, { useState, useContext } from 'react'
+import { AuthContext } from '../../context/AuthContext';
 import Lucide from '../../components/Lucide'
+import Toast from 'react-native-toast-message';
 
 export default function Login({ navigation }) {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
-  
-  // 1. Local states para sa input
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
-  // 2. Gamitin ang login mula sa context
   const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+      Toast.show({
+        type: 'error',
+        text1: 'Oops! ',
+        text2: 'Email and password are required.',
+        position: 'top',
+      });
       return;
     }
 
     const result = await login(email, password);
 
     if (result.success) {
-      // Automatic na lilipat sa Dashboard dahil sa RootStack logic mo
+      Toast.show({
+        type: 'success',
+        text1: 'Welcome Back!',
+        text2: 'Great to see you again.',
+      });
       console.log("Welcome back!");
     } else {
-      Alert.alert("Login Failed", result.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Login Failed',
+        text2: result.message || 'Pakicheck ang email o password mo.',
+      });
     }
   };
 
@@ -82,14 +92,19 @@ export default function Login({ navigation }) {
 
             <View className="mt-10">
               <TouchableOpacity 
-                onPress={handleLogin} // Eto yung trigger
+                onPress={handleLogin}
                 className="bg-teal-600 flex-row items-center justify-center py-4 rounded-2xl shadow-xl shadow-teal-900/20"
               >
                 <Text className="text-white font-bold text-lg mr-2">Log In</Text>
                 <Lucide name="log-in" size={20} color="white" />
               </TouchableOpacity>
 
-              {/* ... Register link footer */}
+              <View className="flex-row justify-center mt-8">
+                <Text className="text-slate-500 text-base">Don't have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                  <Text className="text-teal-600 font-bold text-base">Sign Up</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </ScrollView>

@@ -6,6 +6,7 @@ import Lucide from '../../components/Lucide';
 import GroupMembers from '../../components/groupDetails/GroupMembers';
 import GroupInfoGrid from '../../components/groupDetails/GroupInfoGrid';
 import BalanceAndHistory from '../../components/groupDetails/BalanceAndHistory';
+import Toast from 'react-native-toast-message';
 
 export default function GroupDetail() {
     const navigation = useNavigation();
@@ -27,72 +28,99 @@ export default function GroupDetail() {
 
     useEffect(() => { if (isFocused) loadExpenses(); }, [isFocused]);
 
+    const handleSettleToast = (amount, name) => {
+        Toast.show({
+            type: 'success',
+            text1: 'Payment Recorded!',
+            text2: `₱${amount} has been settled by ${name}. Balance updated!`,
+            position: 'bottom',
+            bottomOffset: 100,
+        });
+        loadExpenses();
+    };
+
     const totalSpent = expenses.reduce((sum, item) => sum + item.amount, 0);
 
-   // Isama natin ang sarili mo sa listahan ng iko-compute
-const allParticipants = [
-    { id: 'me', name: 'You', sticker: require('../../assets/stickers/sticker6.png') }, // Profile sticker mo
-    ...(groupData?.friends || [])
-];
+    const allParticipants = [
+        { id: 'me', name: 'You', sticker: require('../../assets/stickers/sticker6.png') },
+        ...(groupData?.friends || [])
+    ];
 
-const memberBalances = allParticipants.map(member => {
-    let balance = 0;
-
-    expenses.forEach(expense => {
-        const share = expense.amount / totalMembers;
-
-        if (expense.isPayment) {
-            // Settle/Payment Logic
-            if (expense.paidBy === member.name) balance += expense.amount;
-            if (expense.title.includes(member.name)) balance -= expense.amount;
-        } else {
-            // Regular Expense Logic
-            // Kung itong member na 'to ang nagbayad, credit sa kanya ang (Total - Share niya)
-            if (expense.paidBy === member.name || (member.name === 'You' && expense.paidBy === 'You')) {
-                balance += (expense.amount - share);
-            } 
-            // Kung hindi siya ang nagbayad, may utang siyang "share"
-            else {
-                balance -= share;
-            }
-        }
-    });
-
-    return { ...member, balance };
-});
-
-    const handleDeleteGroup = async () => {
-        Alert.alert("Delete Group", `Delete "${groupData.name}"?`, [
-            { text: "Cancel", style: "cancel" },
-            {
-                text: "Delete", style: "destructive", onPress: async () => {
-                    const stored = await AsyncStorage.getItem('userGroups');
-                    if (stored) {
-                        const updated = JSON.parse(stored).filter(g => g.id !== groupData.id);
-                        await AsyncStorage.setItem('userGroups', JSON.stringify(updated));
-                        await AsyncStorage.removeItem(`expenses_${groupData.id}`);
-                        navigation.goBack();
-                    }
+    const memberBalances = allParticipants.map(member => {
+        let balance = 0;
+        expenses.forEach(expense => {
+            const share = expense.amount / totalMembers;
+            if (expense.isPayment) {
+                if (expense.paidBy === member.name) balance += expense.amount;
+                if (expense.title.includes(member.name)) balance -= expense.amount;
+            } else {
+                if (expense.paidBy === member.name || (member.name === 'You' && expense.paidBy === 'You')) {
+                    balance += (expense.amount - share);
+                } else {
+                    balance -= share;
                 }
             }
-        ]);
+        });
+        return { ...member, balance };
+    });
+
+    const handleDeleteGroup = async () => {
+        Alert.alert(
+            "Delete Group",
+            `Are you sure you want to delete "${groupData.name}"?`,
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const stored = await AsyncStorage.getItem('userGroups');
+                            if (stored) {
+                                const updated = JSON.parse(stored).filter(g => g.id !== groupData.id);
+                                await AsyncStorage.setItem('userGroups', JSON.stringify(updated));
+                                await AsyncStorage.removeItem(`expenses_${groupData.id}`);
+
+                                Toast.show({
+                                    type: 'success',
+                                    text1: 'Group Deleted ',
+                                    text2: `Successfully removed "${groupData.name}".`,
+                                });
+
+                                navigation.navigate('AppDrawer', {
+                                    screen: 'Main',
+                                    params: { screen: 'Groups' }
+                                });
+                            }
+                        } catch (error) {
+                            Toast.show({
+                                type: 'error',
+                                text1: 'Error',
+                                text2: 'Failed to delete group.',
+                            });
+                        }
+                    }
+                }
+            ]
+        );
     };
 
     if (!groupData?.id) return <View className="flex-1 justify-center items-center"><Text>Loading...</Text></View>;
 
     return (
         <View className="flex-1 bg-slate-50">
+            {/* HEADER */}
             <View className="px-6 py-4 flex-row justify-between items-center bg-white border-b border-slate-100">
                 <TouchableOpacity onPress={() => navigation.navigate('AppDrawer', {
-                    screen: 'MainTabs',
+                    screen: 'Main',
                     params: { screen: 'Groups' }
                 })} className="p-2 bg-slate-50 rounded-full">
                     <Lucide name="chevron-left" size={24} color="#0f172a" />
                 </TouchableOpacity>
-                <View className="items-center">
-                    <Text className="text-xl font-bold text-slate-900 ">{groupData.name}</Text>
-                </View>
-                <TouchableOpacity onPress={handleDeleteGroup} className="p-2"><Lucide name="trash-2" size={20} color="#e11d48" /></TouchableOpacity>
+                <Text className="text-xl font-bold text-slate-900">{groupData.name}</Text>
+                <TouchableOpacity onPress={handleDeleteGroup} className="p-2">
+                    <Lucide name="trash-2" size={20} color="#e11d48" />
+                </TouchableOpacity>
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
@@ -119,10 +147,14 @@ const memberBalances = allParticipants.map(member => {
                     totalMembers={totalMembers}
                     groupData={groupData}
                     onRefresh={loadExpenses}
+                    onSettle={handleSettleToast}
                 />
             </ScrollView>
 
-            <TouchableOpacity className="absolute bottom-10 right-6 bg-teal-600 w-16 h-16 rounded-full items-center justify-center shadow-2xl" onPress={() => navigation.navigate('AddExpense', { groupData })}>
+            <TouchableOpacity
+                className="absolute bottom-10 right-6 bg-teal-600 w-16 h-16 rounded-full items-center justify-center shadow-2xl"
+                onPress={() => navigation.navigate('AddExpense', { groupData })}
+            >
                 <Lucide name="plus" size={30} color="white" />
             </TouchableOpacity>
         </View>
