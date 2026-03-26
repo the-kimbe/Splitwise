@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Lucide from '../components/Lucide';
 import Dashboard from '../screens/home/Dashboard';
 import Groups from '../screens/home/Groups';
-import Profile from '../screens/home/Activity';
+import Profile from '../screens/home/Profile';
 import CreateGroup from '../screens/home/CreateGroup';
 import Activity from '../screens/home/Activity';
 

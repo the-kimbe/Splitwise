@@ -85,10 +85,7 @@ export default function AddExpense({ route, navigation }) {
                     <Lucide name="chevron-down" size={20} color="#64748b" />
                 </TouchableOpacity>
 
-                <SectionLabel label="Additional Notes" />
-                <View className="bg-slate-50 p-4 rounded-2xl border border-slate-100 min-h-[100px]">
-                    <TextInput placeholder="Notes..." multiline value={notes} onChangeText={setNotes} className="text-slate-700 font-medium" />
-                </View>
+
             </ScrollView>
 
             {/* --- MODAL FOR DROPDOWN --- */}
@@ -120,7 +117,7 @@ export default function AddExpense({ route, navigation }) {
                                 className={`flex-row items-center p-4 rounded-2xl mb-3 border ${paidBy.id === 'me' ? 'bg-teal-50 border-teal-200' : 'bg-slate-50 border-transparent'}`}
                             >
                                 <View className="w-12 h-12 rounded-2xl items-center justify-center mr-4">
-                                <Image source={require('../../assets/stickers/sticker6.png')} className="w-10 h-10 rounded-2xl" />
+                                    <Image source={require('../../assets/stickers/sticker6.png')} className="w-10 h-10 rounded-2xl" />
                                 </View>
                                 <Text className={`flex-1 font-bold text-base ${paidBy.id === 'me' ? 'text-teal-700' : 'text-slate-700'}`}>You</Text>
                                 {paidBy.id === 'me' && <Lucide name="check-circle" size={20} color="#0d9488" />}

@@ -28,7 +28,7 @@ export default function CustomDrawer(props) {
           <View className="w-24 h-24 bg-white rounded-3xl items-center justify-center shadow-sm overflow-hidden border border-white/20">
             <Image
               source={require('../assets/pictures/brand.png')}
-              className="w-20 h-20" // Adjusted size para hindi sumabog sa box
+              className="w-32 h-32" // Adjusted size para hindi sumabog sa box
               resizeMode="contain"
             />
           </View>
@@ -50,24 +50,10 @@ export default function CustomDrawer(props) {
         </View>
       </View>
 
-      <DrawerContentScrollView
-        {...props}
-        contentContainerStyle={{ paddingTop: 10 }}
-      >
-        {/* MAIN SCREENS (Dashboard, Groups, etc.) */}
+      <DrawerContentScrollView {...props} contentContainerStyle={{ paddingTop: 10 }}>
         <View className="px-3">
-          <DrawerItemList
-            {...props}
-            activeTintColor="#0d9488"
-            inactiveTintColor="#64748b"
-            labelStyle={{
-              fontWeight: '900',
-              textTransform: 'uppercase',
-              fontSize: 11,
-              marginLeft: -5
-            }}
-          />
-
+          {/* Nilinis na DrawerItemList (lahat ng styles nasa Navigator na) */}
+          <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
 
